@@ -2,6 +2,9 @@
 
 A local-first, all-in-one data analytics platform.
 
+<img width="1910" height="1051" alt="image" src="https://github.com/user-attachments/assets/031166e9-ba8d-4fdc-8724-2cc24d1f4ca6" />
+
+
 ## Overview
 
 streaksight is a data analytics application designed to handle data connections, query building, and visualization entirely in a local environment.
