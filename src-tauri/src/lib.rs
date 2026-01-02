@@ -134,6 +134,7 @@ fn duckdb_value_to_json(value: duckdb::types::ValueRef) -> serde_json::Value {
         duckdb::types::ValueRef::SmallInt(i) => serde_json::Value::Number(i.into()),
         duckdb::types::ValueRef::Int(i) => serde_json::Value::Number(i.into()),
         duckdb::types::ValueRef::BigInt(i) => serde_json::Value::Number(i.into()),
+        duckdb::types::ValueRef::HugeInt(i) => serde_json::Value::Number((i as i64).into()),
         duckdb::types::ValueRef::Float(f) => serde_json::Number::from_f64(f as f64)
             .map(serde_json::Value::Number)
             .unwrap_or(serde_json::Value::Null),
