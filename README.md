@@ -51,6 +51,7 @@ streaksight focuses on reducing the following three types of time:
 - [ ] Save and load projects and configurations
 - [ ] Export query results in CSV and JSON formats
 - [ ] Provide a built-in help system so users can easily learn how to use the application when needed
+- [ ] Distributing the application
 
 ## Beyond Version 1 (Draft)
 
