@@ -42,7 +42,7 @@
   import PieChart from './views/PieChart.svelte';
   import TableView from './views/TableView.svelte';
   import FitViewHelper from './FitViewHelper.svelte';
-  import DataImportDialog from './DataImportDialog.svelte';
+  import ConnectorDialog from './ConnectorDialog.svelte';
   import TableDetailsDialog from './TableDetailsDialog.svelte';
   import NodeListItem from './NodeListItem.svelte';
   import {
@@ -578,7 +578,7 @@
   </div>
 </div>
 
-<DataImportDialog
+<ConnectorDialog
   bind:open={isImportDialogOpen}
   existingTableNames={tables.map((t) => t.name)}
   onImportComplete={handleImportComplete}
