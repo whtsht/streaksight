@@ -90,8 +90,8 @@
     row_count: number;
   };
 
-  type PreviewResult = {
-    columns: Array<{ name: string; type: string }>;
+  type RunQueryResult = {
+    columns: Array<{ name: string }>;
     rows: Array<Record<string, any>>;
     row_count: number;
     error?: string;
@@ -101,7 +101,8 @@
   let edges = $state.raw<Edge[]>([]);
   let tables = $state<TableInfo[]>([]);
   let selectedNodeId = $state<string | null>(null);
-  let previewData = $state<PreviewResult | null>(null);
+  let settingData = $state<{ columns: { name: string }[] }>({ columns: [] });
+  let previewData = $state<RunQueryResult | null>(null);
   let isLoadingPreview = $state(false);
   let isImportDialogOpen = $state(false);
   let isTableDetailsDialogOpen = $state(false);
@@ -337,6 +338,40 @@
     requestAnimationFrame(() => fitViewFn?.());
   }
 
+  async function updateColumns() {
+    if (!selectedNodeId) return;
+
+    try {
+      let queryNodeId = selectedNodeId;
+      if ((selectedNode as any)?.kind === 'source') return;
+      const sourceEdge = edges.find((e) => e.target === selectedNodeId);
+      queryNodeId = sourceEdge!.source;
+
+      const nodeGraph = {
+        selected_node_id: queryNodeId,
+        nodes: nodes.map((n) => ({
+          id: n.id,
+          type: n.type,
+          data: n.data
+        })),
+        edges: edges.map((e) => ({
+          source: e.source,
+          target: e.target
+        }))
+      };
+
+      const queryResult = await invoke<string>('run_query', {
+        nodeGraph: JSON.stringify(nodeGraph),
+        page: currentPage,
+        pageSize: pageSize
+      });
+      const parsedData: RunQueryResult = JSON.parse(queryResult);
+      settingData = { columns: parsedData.columns };
+    } catch (error: any) {
+      console.error('Failed to run query:', error);
+    }
+  }
+
   async function updatePreview() {
     if (!selectedNodeId) {
       previewData = null;
@@ -408,13 +443,12 @@
   }) {
     selectedNodeId = node.id;
     currentPage = 1;
+    updateColumns();
     updatePreview();
   }
 
   function onConnect(connection: any) {
     edges = [...edges, connection];
-    currentPage = 1;
-    updatePreview();
   }
 
   function onDelete() {
@@ -549,7 +583,7 @@
 
           <SettingsComponent
             nodeData={selectedNode.data}
-            previewColumns={previewData?.columns || []}
+            previewColumns={settingData.columns}
             onDataChange={settingsConfig.updateFn}
           />
         {:else}

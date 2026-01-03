@@ -3,7 +3,6 @@
 
   type ColumnInfo = {
     name: string;
-    type: string;
   };
 
   type Props = {
